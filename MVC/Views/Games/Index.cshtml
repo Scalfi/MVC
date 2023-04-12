@@ -1,0 +1,67 @@
+﻿@model IEnumerable<MVC.Models.Game>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="card-body">
+    <a class="btn btn-dark btn-sm " id="showTable">Get items</a>
+    <div class="card-title">
+        <h2>Games</h2>
+    </div>
+
+    <table class="table table-bordered table-striped" id='tbllist'>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReleaseDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Genre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+<script rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+<script type="text/javascript">
+    var js = jQuery.noConflict(true);
+
+    js(document).ready(function () {
+        $("#showTable").click(function () {
+            js('#tbllist').DataTable({
+                paging: false,
+                searching: false,
+               "ajax": {
+                    url: "/games/gamesjson",
+                    type: "get",
+                    "dataSrc": function (data) {
+                        var empdata = [];
+                        $.each(data, function (key, value) {
+                            empdata.push([value.title, value.releaseDate, value.genre, value.price])
+                        })
+                        console.log(empdata)
+                        return empdata
+                    }
+                },
+                columnDefs: [{
+                    targets: 1,
+                    render: DataTable.render.date()
+                }]
+            });
+        });
+    });
+</script>
